@@ -21,14 +21,15 @@ public class Client {
             outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
 
             reader = new BufferedReader(inputStreamReader);
-            writer = new PrintWriter(outputStreamWriter);
+            writer = new PrintWriter(outputStreamWriter, true);
 
             Scanner scanner = new Scanner(System.in);
 
             while (true){
 
                 String messageToSend = scanner.nextLine();
-                writer.write(messageToSend);
+                writer.println(messageToSend);
+
 
             }
 
