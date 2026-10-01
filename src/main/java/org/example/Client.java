@@ -30,11 +30,32 @@ public class Client {
                 String messageToSend = scanner.nextLine();
                 writer.println(messageToSend);
 
+                System.out.println("Server" + reader.readLine());
 
             }
 
         }catch (IOException e){
-            throw new RuntimeException();
+            System.out.println("Error");
+        }finally {
+            try {
+                if(socket != null){
+                    socket.close();
+                }
+                if (inputStreamReader != null){
+                    inputStreamReader.close();
+                }
+                if (outputStreamWriter != null){
+                    outputStreamWriter.close();
+                }
+                if(reader != null){
+                    reader.close();
+                }
+                if (writer != null){
+                    writer.close();
+                }
+            } catch (IOException e) {
+                System.out.println("Error");
+            }
         }
 
 //        if (args.length >= 1) {
