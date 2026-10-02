@@ -3,6 +3,7 @@ package org.example;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client {
     public static void main(String[] args) {
@@ -10,29 +11,54 @@ public class Client {
         String host = "127.0.0.1";
         int port = 2000;
         Socket socket = null;
-        InputStreamReader inputStreamReader = null;
-        OutputStreamWriter outputStreamWriter = null;
-        BufferedReader reader = null;
-        PrintWriter writer = null;
+        AtomicBoolean running = new AtomicBoolean(true);
+
+
+        if (args.length >= 1) {
+            host = args[0];
+        }
+
+        if (args.length >= 2) {
+            port = Integer.parseInt(args[1]);
+        }
 
         try {
-            socket = new Socket(host,port);
-            inputStreamReader = new InputStreamReader(socket.getInputStream());
-            outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
-
-            reader = new BufferedReader(inputStreamReader);
-            writer = new PrintWriter(outputStreamWriter, true);
-
-            Scanner scanner = new Scanner(System.in);
+            socket = new Socket(host, port);
 
             System.out.println("Connected to " + host + ":" + port);
 
-            while (true){
+            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            PrintWriter writer = new PrintWriter(outputStreamWriter, true);
+
+            Scanner scanner = new Scanner(System.in);
+
+            Runnable receiveMessages =  () -> {
+                try {
+                    while (true) {
+                        String message = reader.readLine();
+                        if(message == null){
+                            running.set(false);
+                            break;
+                        }
+                        System.out.println("Server: " + message);
+                    }
+                    System.out.println("Server disconnected.");
+                }catch (IOException e){
+                    System.out.println("Connection lost!");
+                }
+            };
+
+            Thread receiverThread = new Thread(receiveMessages);
+            receiverThread.start();
+
+
+            while (running.get()) {
 
                 String messageToSend = scanner.nextLine();
                 writer.println(messageToSend);
-
-                System.out.println("Server" + reader.readLine());
 
             }
 
@@ -43,32 +69,9 @@ public class Client {
                 if(socket != null){
                     socket.close();
                 }
-                if (inputStreamReader != null){
-                    inputStreamReader.close();
-                }
-                if (outputStreamWriter != null){
-                    outputStreamWriter.close();
-                }
-                if(reader != null){
-                    reader.close();
-                }
-                if (writer != null){
-                    writer.close();
-                }
             } catch (IOException e) {
                 System.out.println("Error");
             }
         }
-
-        if (args.length >= 1) {
-            host = args[0];
-        }
-
-        if (args.length >= 2) {
-            port = Integer.parseInt(args[1]);
-        }
-
-        System.out.println("Host: " + host);
-        System.out.println("Port: " + port);
     }
 }
