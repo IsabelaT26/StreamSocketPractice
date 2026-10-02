@@ -25,6 +25,8 @@ public class Client {
 
             Scanner scanner = new Scanner(System.in);
 
+            System.out.println("Connected to " + host + ":" + port);
+
             while (true){
 
                 String messageToSend = scanner.nextLine();
@@ -58,15 +60,15 @@ public class Client {
             }
         }
 
-//        if (args.length >= 1) {
-//            host = args[0];
-//        }
-//
-//        if (args.length >= 2) {
-//            port = Integer.parseInt(args[1]);
-//        }
+        if (args.length >= 1) {
+            host = args[0];
+        }
 
-//        System.out.println("Host: " + host);
-//        System.out.println("Port: " + port);
+        if (args.length >= 2) {
+            port = Integer.parseInt(args[1]);
+        }
+
+        System.out.println("Host: " + host);
+        System.out.println("Port: " + port);
     }
 }
