@@ -37,7 +37,7 @@ public class Client {
 
             Runnable receiveMessages =  () -> {
                 try {
-                    while (true) {
+                    while (running.get()) {
                         String message = reader.readLine();
                         if(message == null){
                             running.set(false);
@@ -47,6 +47,7 @@ public class Client {
                     }
                     System.out.println("Server disconnected.");
                 }catch (IOException e){
+                    running.set(false);
                     System.out.println("Connection lost!");
                 }
             };
@@ -59,6 +60,11 @@ public class Client {
 
                 String messageToSend = scanner.nextLine();
                 writer.println(messageToSend);
+
+                if (writer.checkError()) {
+                    running.set(false);
+                    System.out.println("Could not send message.");
+                }
 
             }
 
