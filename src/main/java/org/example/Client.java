@@ -27,8 +27,16 @@ public class Client {
 
             System.out.println("Connected to " + host + ":" + port);
 
-            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(
+                            socket.getInputStream(),
+                            "ISO-8859-1"
+                    );
+            OutputStreamWriter outputStreamWriter =
+                    new OutputStreamWriter(
+                            socket.getOutputStream(),
+                            "ISO-8859-1"
+                    );
 
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(outputStreamWriter, true);
